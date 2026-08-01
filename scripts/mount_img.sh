@@ -7,9 +7,10 @@ fi
 
 IMG_FILE="${IMG_FILE:-/mnt/storage/drive.img}"
 
+
+## Script
 LOOP=$(losetup --show -fP $IMG_FILE)
 echo $LOOP > /tmp/loop.cache
 
 mkdir -p /mnt/drive
 mount $LOOP /mnt/drive
-

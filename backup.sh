@@ -8,6 +8,8 @@ fi
 
 DES="${DES:-"/mnt/nas"}"
 
+
+## Script
 /opt/usb-to-nas/scripts/forced_eject.sh && \
 /opt/usb-to-nas/scripts/mount_img.sh
 

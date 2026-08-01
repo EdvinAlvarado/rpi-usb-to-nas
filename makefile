@@ -4,11 +4,11 @@ install:
 	mkdir -p /opt/usb-to-nas/scripts
 	cp -f scripts/* /opt/usb-to-nas/scripts
 	cp -f *sh /opt/usb-to-nas/
+	cp -f *conf /opt/usb-to-nas/
 	cp -f *service /etc/systemd/system/
 	cp -f *timer /etc/systemd/system/
-	cp -f *conf /opt/usb-to-nas/
 
-enable: install
+enable:
 	systemctl daemon-reload
 	systemctl enable --now usb-to-nas-startup.service
 	systemctl enable --now usb-to-nas-backup.service
