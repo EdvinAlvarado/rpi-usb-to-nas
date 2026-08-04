@@ -7,6 +7,7 @@ install:
 	cp -f *conf /opt/usb-to-nas/
 	cp -f *service /etc/systemd/system/
 	cp -f *timer /etc/systemd/system/
+	chmod -R +x /opt/usb-to-nas
 
 enable:
 	systemctl daemon-reload
@@ -24,3 +25,4 @@ uninstall: disable
 	rm -f /etc/systemd/system/usb-to-nas-startup.service
 	rm -f /etc/systemd/system/usb-to-nas-backup.service
 	rm -f /etc/systemd/system/usb-to-nas-backup.timer
+	echo "image file is not deleted."
