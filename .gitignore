@@ -1,11 +1,10 @@
 *.buildinfo
 *.deb
 *.changes
-DEBIAN
 .debhelper
 *.debhelper
 *.debhelper.log
 *.substvars
-**/debian/usb-to-archive/
+**/usb-to-archive/
 files
 debhelper-build-stamp
