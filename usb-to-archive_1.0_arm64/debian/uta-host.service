@@ -1,13 +1,12 @@
 [Unit]
 Description=Simulates a USB drive through the USB-C port
-After=usb-to-nas-startup.service
 
 
 [Service]
 Type=oneshot
 User=root
 Group=root
-ExecStart=/opt/usb-to-nas/boot.sh
+ExecStart=/usr/bin/usb-to-archive/uta-host
 RemainAfterExit=yes
 
 [Install]

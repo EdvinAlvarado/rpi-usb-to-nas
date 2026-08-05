@@ -1,0 +1,15 @@
+Source: usb-to-archive
+Section: utils
+Priority: optional
+Maintainer: Edvin Alvarado <ealvarado301@gmail.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.5.0
+Rules-Requires-Root: no
+
+Package: usb-to-archive
+Architecture: arm64
+Depends: ${misc:Depends}
+Description: Utility to expose a Raspberry Pi USB gadget and archive data
+ A utility to make the Raspberry Pi simulate a USB drive and archive
+ data periodically.
+

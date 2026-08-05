@@ -1,5 +1,5 @@
 [Unit]
-Description=Run usb-to-nas-backup.service at 2AM
+Description=Runs usb-to-archive at 2AM
 
 [Timer]
 OnCalendar=02:00

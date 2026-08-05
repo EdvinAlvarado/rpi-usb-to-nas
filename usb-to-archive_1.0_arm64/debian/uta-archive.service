@@ -1,5 +1,5 @@
 [Unit]
-Description=Back up USB drive to NAS
+Description=Back up USB drive to archive
 After=network-online.target local-fs.target
 Wants=network-online.target
 
@@ -7,4 +7,4 @@ Wants=network-online.target
 Type=oneshot
 User=root
 Group=root
-ExecStart=/opt/usb-to-nas/backup.sh
+ExecStart=/usr/bin/usb-to-archive/uta -emaur

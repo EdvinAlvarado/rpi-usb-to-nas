@@ -1,0 +1,129 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Load configuration
+if [ -f "usb-to-archive.conf" ]; then
+        source usb-to-archive.conf
+elif [ -f "/etc/usb-to-archive/usb-to-archive.conf" ]; then
+        source /etc/usb-to-archive/usb-to-archive.conf
+fi
+# Global variables
+GADGET_NAME="usbdrive"
+STORAGE_FUNC="/sys/kernel/config/usb_gadget/$GADGET_NAME/functions/mass_storage.usb0"
+IMG_FILE="${IMG_FILE:-/mnt/storage/drive.img}"
+DES="${DES:-/mnt/nas}"
+
+
+usage() {
+    cat <<EOF
+Usage: ${0##*/} [OPTION] [DESTINATION]
+
+Options:
+  -e, --eject    Eject the USB device
+  -m, --mount    Mount the USB image file to /mnt/drive
+  -u, --umount   Unmount the USB image file from /mnt/drive
+  -r, --rehost   Rehost the USB device with the specified image file
+  -a, --archive  Archive data from the mounted USB image to DESTINATION (default: /mnt/nas)
+  -h, --help     Display this help and exit
+
+Multiple options may be specified; they execute in the order given.
+If DESTINATION is omitted, archive actions default to /mnt/nas.
+EOF
+}
+
+die() {
+    echo "Error: $*" >&2
+    exit 1
+}
+
+eject() {
+    echo "Ejecting device..."
+    echo 1 > "$STORAGE_FUNC/lun.0/forced_eject" || \
+        die "failed to force eject"
+}
+
+mount() {
+    echo "Mounting device..."
+    if [[ ! -e "$IMG_FILE" ]]; then
+        die "image file not found: $IMG_FILE"
+    fi
+
+    local loop
+    loop=$(losetup --show -fP "$IMG_FILE") || \
+        die "failed to set up loop device for $IMG_FILE"
+    echo $loop > /tmp/loop.cache
+
+    mkdir -p /mnt/drive
+    mount "$loop" /mnt/drive || \
+        die "failed to mount $loop to /mnt/drive"
+}
+
+umount() {
+    echo "Unmounting device..."
+    local loop
+    if [[ -f /tmp/loop.cache ]]; then
+        loop=$(< /tmp/loop.cache)
+    else
+        die "loop device cache not found"
+    fi
+
+    umount /mnt/drive || \
+        die "failed to unmount /mnt/drive"
+    losetup -d "$loop" || \
+        die "failed to detach loop device $loop"
+}
+
+rehost() {
+    echo "Rehosting device..."
+    echo "$IMG_FILE" > "$STORAGE_FUNC/lun.0/file" || \
+        die "failed to rehost device with $IMG_FILE"
+}
+
+archive() {
+    echo "Archiving data..."
+    local des="${1:-$DES}"
+    rsync -avP --remove-source-files /mnt/drive/ "$des" || \
+        die "failed to archive data to $des"
+}
+
+main() {
+    local actions=()
+    local des="$DES"
+
+    local opts
+    opts=$(getopt -o emurah --long eject,mount,umount,rehost,archive,help -n "${0##*/}" -- "$@") || {
+        usage >&2
+        exit 1
+    }
+    eval set -- "$opts"
+
+    while true; do
+        case "$1" in
+            -e|--eject)   actions+=("eject"); shift ;;
+            -m|--mount)   actions+=("mount"); shift ;;
+            -u|--umount)  actions+=("umount"); shift ;;
+            -r|--rehost)  actions+=("rehost"); shift ;;
+            -a|--archive) actions+=("archive"); shift ;;
+            -h|--help)    usage; exit 0 ;;
+            --)           shift; break ;;
+            *)            die "unknown option: $1" ;;
+        esac
+    done
+
+    # If there are any remaining arguments, treat the first one as the destination for archiving
+    [[ $# -gt 0 ]] && des="$1"
+    [[ ${#actions[@]} -eq 0 ]] && die "no action specified"
+
+    for action in "${actions[@]}"; do
+        case "$action" in
+            eject)   eject ;;
+            mount)   mount ;;
+            umount)  umount ;;
+            rehost)  rehost ;;
+            archive) archive "$des" ;;
+        esac
+    done
+}
+
+main "$@"
+
