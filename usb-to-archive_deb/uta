@@ -42,7 +42,7 @@ eject() {
         die "failed to force eject"
 }
 
-mount() {
+mount_img() {
     echo "Mounting device..."
     if [[ ! -e "$IMG_FILE" ]]; then
         die "image file not found: $IMG_FILE"
@@ -58,7 +58,7 @@ mount() {
         die "failed to mount $loop to /mnt/drive"
 }
 
-umount() {
+umount_img() {
     echo "Unmounting device..."
     local loop
     if [[ -f /tmp/loop.cache ]]; then
@@ -117,8 +117,8 @@ main() {
     for action in "${actions[@]}"; do
         case "$action" in
             eject)   eject ;;
-            mount)   mount ;;
-            umount)  umount ;;
+            mount)   mount_img ;;
+            umount)  umount_img ;;
             rehost)  rehost ;;
             archive) archive "$des" ;;
         esac
