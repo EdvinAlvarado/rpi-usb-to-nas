@@ -2,7 +2,7 @@
 set -eu
 
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-PKG_DIR="$SCRIPT_DIR/usb-to-archive_1.0_arm64"
+PKG_DIR="$SCRIPT_DIR/usb-to-archive_deb"
 
 if [ ! -d "$PKG_DIR/debian" ]; then
   echo "Error: package directory not found at $PKG_DIR" >&2
