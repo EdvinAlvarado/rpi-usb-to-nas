@@ -11,4 +11,4 @@ fi
 
 cd "$PKG_DIR"
 # -d skips Debian build-deps checks, useful when building on Arch.
-exec dpkg-buildpackage -us -uc -b -a arm64 -d
+exec dpkg-buildpackage -us -uc -a arm64
