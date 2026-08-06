@@ -6,7 +6,7 @@ Description=Simulates a USB drive through the USB-C port
 Type=oneshot
 User=root
 Group=root
-ExecStart=/usr/bin/usb-to-archive/uta-host
+ExecStart=/usr/bin/uta-host
 RemainAfterExit=yes
 
 [Install]
