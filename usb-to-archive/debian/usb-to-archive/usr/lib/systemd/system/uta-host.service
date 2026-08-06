@@ -1,0 +1,13 @@
+[Unit]
+Description=Simulates a USB drive through the USB-C port
+
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart=/usr/bin/uta-host
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

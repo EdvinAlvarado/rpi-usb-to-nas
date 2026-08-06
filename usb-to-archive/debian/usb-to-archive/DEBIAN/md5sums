@@ -1,0 +1,6 @@
+3f1bd6aa22eaea9ecf189a51a5dd1031  usr/bin/uta
+99a569b5a929f50b04693ae6f798cd49  usr/bin/uta-host
+4ce0d5d69d5616c401610fc1de6dcca0  usr/lib/systemd/system/uta-archive.service
+c3ee592d3d00f5d705ff6e9954c8f734  usr/lib/systemd/system/uta-archive.timer
+af407f439f80ab5499bb47bfab7d88fc  usr/lib/systemd/system/uta-host.service
+808f9b74337e98a2f1b8ab704573e31a  usr/share/doc/usb-to-archive/changelog.Debian.gz

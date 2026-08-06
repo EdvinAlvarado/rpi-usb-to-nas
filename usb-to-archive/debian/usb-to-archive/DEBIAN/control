@@ -1,0 +1,10 @@
+Package: usb-to-archive
+Version: 1.0.0-1
+Architecture: arm64
+Maintainer: Edvin Alvarado <ealvarado301@gmail.com>
+Installed-Size: 29
+Section: utils
+Priority: optional
+Description: Utility to expose a Raspberry Pi USB gadget and archive data
+ A utility to make the Raspberry Pi simulate a USB drive and archive
+ data periodically.

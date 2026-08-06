@@ -1,0 +1,10 @@
+[Unit]
+Description=Back up USB drive to archive
+After=network-online.target local-fs.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart=/usr/bin/uta -emaur
