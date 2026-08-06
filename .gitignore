@@ -5,6 +5,6 @@
 *.debhelper
 *.debhelper.log
 *.substvars
-debian/usb-to-archive/
+debian/usb-to-archive/*
 files
 debhelper-build-stamp
