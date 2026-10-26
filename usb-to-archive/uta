@@ -13,6 +13,8 @@ STORAGE_FUNC="/sys/kernel/config/usb_gadget/$GADGET_NAME/functions/mass_storage.
 IMG_FILE="${IMG_FILE:-/mnt/storage/drive.img}"
 DES="${DES:-/mnt/nas}"
 
+# Script variables
+local service=false # Check if running as a service. If so then certain actions may be handled differently. e.g. make sure that failures don't leave the system in an inconsistent state
 
 usage() {
     cat <<EOF
@@ -31,10 +33,16 @@ If DESTINATION is omitted, archive actions default to /mnt/nas.
 EOF
 }
 
-die() {
+post_error() {
     echo "Error: $*" >&2
+}
+
+die() {
+    post_error "$*"
     exit 1
 }
+###########################################################
+
 
 eject() {
     echo "Ejecting device..."
@@ -54,8 +62,30 @@ mount_img() {
     echo $loop > /tmp/loop.cache
 
     mkdir -p /mnt/drive
-    mount "$loop" /mnt/drive || \
+    mount "$loop" /mnt/drive || { \
+        if $service; then
+            post_error "failed to mount $loop to /mnt/drive"
+            losetup -d "$loop" || post_error "failed to detach loop device $loop"
+            rm -f /tmp/loop.cache
+            rehost
+            exit 1
+        fi
         die "failed to mount $loop to /mnt/drive"
+    }
+}
+
+archive() {
+    echo "Archiving data..."
+    local des="${1:-$DES}"
+    rsync -avP --remove-source-files --no-owner --no-group /mnt/drive/ "$des" || { \
+        if $service; then
+            post_error "failed to archive data to $des"
+            umount_img
+            rehost
+            exit 1
+        fi
+        die "failed to archive data to $des"
+    }
 }
 
 umount_img() {
@@ -67,10 +97,15 @@ umount_img() {
         die "loop device cache not found"
     fi
 
-    umount /mnt/drive || \
-        die "failed to unmount /mnt/drive"
+    if mountpoint -q /mnt/drive; then
+        umount /mnt/drive || \
+            die "failed to unmount /mnt/drive"
+    else
+        die "device not mounted at /mnt/drive"
+    fi
     losetup -d "$loop" || \
         die "failed to detach loop device $loop"
+    rm -f /tmp/loop.cache
 }
 
 rehost() {
@@ -79,19 +114,13 @@ rehost() {
         die "failed to rehost device with $IMG_FILE"
 }
 
-archive() {
-    echo "Archiving data..."
-    local des="${1:-$DES}"
-    rsync -avP --remove-source-files --no-owner --no-group /mnt/drive/ "$des" || \
-        die "failed to archive data to $des"
-}
 
 main() {
     local actions=()
     local des="$DES"
 
     local opts
-    opts=$(getopt -o emurah --long eject,mount,umount,rehost,archive,help -n "${0##*/}" -- "$@") || {
+    opts=$(getopt -o emurahs --long eject,mount,umount,rehost,archive,help,service -n "${0##*/}" -- "$@") || {
         usage >&2
         exit 1
     }
@@ -105,6 +134,7 @@ main() {
             -r|--rehost)  actions+=("rehost"); shift ;;
             -a|--archive) actions+=("archive"); shift ;;
             -h|--help)    usage; exit 0 ;;
+            -s|--service) service=true; shift ;;
             --)           shift; break ;;
             *)            die "unknown option: $1" ;;
         esac
