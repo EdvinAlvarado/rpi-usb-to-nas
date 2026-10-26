@@ -82,7 +82,7 @@ rehost() {
 archive() {
     echo "Archiving data..."
     local des="${1:-$DES}"
-    rsync -avP --remove-source-files /mnt/drive/ "$des" || \
+    rsync -avP --remove-source-files --no-owner --no-group /mnt/drive/ "$des" || \
         die "failed to archive data to $des"
 }
 

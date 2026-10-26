@@ -1,3 +1,9 @@
+usb-to-archive (1.0.1-1) stable; urgency=medium
+
+  * Fixed archive showing chown error
+
+ -- Edvin Alvarado <ealvarado301@gmail.com>  Mon, 04 Aug 2026 20:30:00 -0600
+
 usb-to-archive (1.0.0-1) stable; urgency=medium
 
   * Initial release.
