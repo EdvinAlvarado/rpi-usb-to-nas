@@ -1,4 +1,4 @@
-usb-to-archive (1.1.0-1) stable; urgency=medium
+usb-to-archive (1.1.0-2) stable; urgency=medium
 
   * Added service flag that wil have uta clean up on itself if there are failures.
   * Set service flag on the uta-archive.service.
