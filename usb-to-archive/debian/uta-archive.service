@@ -1,7 +1,7 @@
 [Unit]
 Description=Back up USB drive to archive
-After=network-online.target local-fs.target
-Wants=network-online.target
+After=network-online.target local-fs.target remote-fs.target
+Requires=network-online.targe tlocal-fs.target remote-fs.target
 
 [Service]
 Type=oneshot

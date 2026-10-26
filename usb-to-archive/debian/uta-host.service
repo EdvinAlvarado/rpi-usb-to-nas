@@ -1,6 +1,7 @@
 [Unit]
 Description=Simulates a USB drive through the USB-C port
-
+After=local-fs.target
+Requires=local-fs.target
 
 [Service]
 Type=oneshot

@@ -3,6 +3,7 @@ usb-to-archive (1.1.0-1) stable; urgency=medium
   * Added service flag that wil have uta clean up on itself if there are failures.
   * Set service flag on the uta-archive.service.
   * Now unmount remove the /tmp/loop.cache after it's done with it.
+  * Set services to run only if remote and local filesystem are available.
 
  -- Edvin Alvarado <ealvarado301@gmail.com>  Mon, 26 Oct 2026 11:00:00 -0600
 
